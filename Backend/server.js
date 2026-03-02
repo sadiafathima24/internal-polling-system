@@ -11,14 +11,25 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+/* =========================
+   CORS CONFIGURATION (FIX)
+========================= */
+app.use(cors({
+  origin: true, // allows all origins (safe for college project)
+  credentials: true
+}));
+
 app.use(express.json());
 
-// Routes
+/* =========================
+   ROUTES
+========================= */
 app.use("/api/auth", authRoutes);
 app.use("/api/polls", pollRoutes);
 
-// Protected test route
+/* =========================
+   PROTECTED TEST ROUTE
+========================= */
 app.get("/api/protected", verifyToken, (req, res) => {
   res.json({
     message: "You accessed a protected route",
@@ -26,16 +37,23 @@ app.get("/api/protected", verifyToken, (req, res) => {
   });
 });
 
-// Root test
+/* =========================
+   ROOT TEST ROUTE
+========================= */
 app.get("/", (req, res) => {
   res.send("Internal Polling Backend Running");
 });
 
-// DB connection
+/* =========================
+   DATABASE CONNECTION
+========================= */
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected Successfully"))
   .catch((err) => console.log("MongoDB Connection Error:", err));
 
+/* =========================
+   SERVER LISTEN
+========================= */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
