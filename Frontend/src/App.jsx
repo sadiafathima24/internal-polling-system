@@ -2,6 +2,8 @@ import { Routes, Route, useNavigate, Link, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./styles.css";
 
+const API = "https://internal-polling-system.onrender.com";
+
 function Navbar() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -48,7 +50,7 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:5000/api/auth/register", {
+    const response = await fetch(`${API}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password }),
@@ -100,7 +102,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:5000/api/auth/login", {
+    const response = await fetch(`${API}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -158,7 +160,7 @@ function CreatePoll({ refresh }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:5000/api/polls", {
+    const response = await fetch(`${API}/api/polls`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -214,7 +216,7 @@ function Dashboard() {
   const user = JSON.parse(atob(token.split(".")[1]));
 
   const fetchPolls = async () => {
-    const response = await fetch("http://localhost:5000/api/polls", {
+    const response = await fetch(`${API}/api/polls`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -223,7 +225,7 @@ function Dashboard() {
   };
 
   const vote = async (pollId, index) => {
-    const response = await fetch("http://localhost:5000/api/polls/vote", {
+    const response = await fetch(`${API}/api/polls/vote`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
