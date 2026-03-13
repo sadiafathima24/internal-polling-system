@@ -12,12 +12,30 @@ dotenv.config();
 const app = express();
 
 /* =========================
-   CORS CONFIGURATION (FIX)
+   CORS CONFIGURATION
 ========================= */
-app.use(cors({
-  origin: true, // allows all origins (safe for college project)
-  credentials: true
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://internal-polling-system.vercel.app"
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, true); // allow anyway for college project
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+  })
+);
+
+app.options("*", cors());
 
 app.use(express.json());
 
@@ -47,12 +65,13 @@ app.get("/", (req, res) => {
 /* =========================
    DATABASE CONNECTION
 ========================= */
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected Successfully"))
   .catch((err) => console.log("MongoDB Connection Error:", err));
 
 /* =========================
-   SERVER LISTEN
+   SERVER START
 ========================= */
 const PORT = process.env.PORT || 5000;
 
